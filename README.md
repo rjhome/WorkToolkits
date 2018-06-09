@@ -18,3 +18,12 @@
     -aet [accept_time]  accept_time (end): yyyymmdd (<)
     -id [ID]            update itsm id : ID
   ```
+
+## requires 相关模块
+  ```
+  sqlalchemy
+  prettytable
+  argparse
+  re
+  datetime
+  ```
