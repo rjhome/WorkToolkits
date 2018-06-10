@@ -15,7 +15,7 @@ parser.add_argument('-bt', nargs='?', metavar='begin_time', type=str, help='begi
 parser.add_argument('-et', nargs='?', metavar='end_time', type=str, help='end_time : yyyymmdd (<)')
 parser.add_argument('-abt', nargs='?', metavar='accept_time', type=str, help='accept_time (begin): yyyymmdd (>=) | 0 for today')
 parser.add_argument('-aet', nargs='?', metavar='accept_time', type=str, help='accept_time (end): yyyymmdd (<)')
-parser.add_argument('-id', nargs='?', metavar='ID', type=str, help='update/delete itsm id : [id1,id2,id3....]')
+parser.add_argument('-id', nargs='?', metavar='ID1,ID2,ID3...', type=str, help='update/delete itsm id : [id1,id2,id3....]')
 myOpt = parser.parse_args()
 
 
