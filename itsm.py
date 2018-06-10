@@ -16,6 +16,7 @@ parser.add_argument('-et', nargs='?', metavar='end_time', type=str, help='end_ti
 parser.add_argument('-abt', nargs='?', metavar='accept_time', type=str, help='accept_time (begin): yyyymmdd (>=) | 0 for today')
 parser.add_argument('-aet', nargs='?', metavar='accept_time', type=str, help='accept_time (end): yyyymmdd (<)')
 parser.add_argument('-id', nargs='?', metavar='ID1,ID2,ID3...', type=str, help='update/delete itsm id : [id1,id2,id3....]')
+parser.add_argument('-vt', nargs='?', metavar='version_time', type=str, help='update version_time : yyyymmdd')
 myOpt = parser.parse_args()
 
 
@@ -71,7 +72,7 @@ def _update():
 	query = myTaskSession.query(WorkToolkitDB.db.Task)
 
 	IDStr = myOpt.id
-	IDs = re.split(',', IDStr)
+	IDs = re.split('\s*,\s*', IDStr)
 
 	if len(IDs) == 0:
 		print('ERR: no add task input')
@@ -83,6 +84,9 @@ def _update():
 
 	for ID in IDs:
 		query.filter(WorkToolkitDB.db.Task.id == ID).update({WorkToolkitDB.db.Task.finish_status: myOpt.f})
+
+		if myOpt.vt:
+			query.filter(WorkToolkitDB.db.Task.id == ID).update({WorkToolkitDB.db.Task.version_time: myOpt.vt})
 
 	#commit
 	myTaskSession.commit()
@@ -145,7 +149,7 @@ def _delete():
 	query = myTaskSession.query(WorkToolkitDB.db.Task)
 
 	IDStr = myOpt.id
-	IDs = re.split(',', IDStr)
+	IDs = re.split('\s*,\s*', IDStr)
 
 	if len(IDs) == 0:
 		print('ERR: no deleting id input')
