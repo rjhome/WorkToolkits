@@ -15,7 +15,7 @@ parser.add_argument('-bt', nargs='?', metavar='begin_time', type=str, help='begi
 parser.add_argument('-et', nargs='?', metavar='end_time', type=str, help='end_time : yyyymmdd (<)')
 parser.add_argument('-abt', nargs='?', metavar='accept_time', type=str, help='accept_time (begin): yyyymmdd (>=) | 0 for today')
 parser.add_argument('-aet', nargs='?', metavar='accept_time', type=str, help='accept_time (end): yyyymmdd (<)')
-parser.add_argument('-id', nargs='?', metavar='ID', type=int, help='update itsm id : ID')
+parser.add_argument('-id', nargs='?', metavar='ID', type=str, help='update/delete itsm id : [id1,id2,id3....]')
 myOpt = parser.parse_args()
 
 
@@ -70,6 +70,24 @@ def _update():
 	"""set itsm task finished"""
 	query = myTaskSession.query(WorkToolkitDB.db.Task)
 
+	IDStr = myOpt.id
+	IDs = re.split(',', IDStr)
+
+	if len(IDs) == 0:
+		print('ERR: no add task input')
+		return 1
+
+	#set default finsih_status if not given
+	if not myOpt.f:
+		myOpt.f = 1
+
+	for ID in IDs:
+		query.filter(WorkToolkitDB.db.Task.id == ID).update({WorkToolkitDB.db.Task.finish_status: myOpt.f})
+
+	#commit
+	myTaskSession.commit()
+
+	"""
 	#ERR: not given itsm id for update 
 	if not myOpt.id:
 		print('Error: no itsm id given for update finish_status to 1')
@@ -82,7 +100,7 @@ def _update():
 	query.filter(WorkToolkitDB.db.Task.id == myOpt.id).update({'finish_status': myOpt.f})
 	myTaskSession.commit()
 
-	"""
+	
 	data = query.filter(WorkToolkitDB.db.Task.id == myOpt.id).all()
 	for record in data:
 			#record_arr = record.to_array()
@@ -100,6 +118,10 @@ def _add():
 
 	addDataStr = input('输入记录 格式: "task_id","title","version_time","memo","sys" :\n    >')
 	addData = re.split('\s',addDataStr)
+
+	if len(addData) != 5:
+		print('ERR: no add task input')
+		return 1
 
 	#create record
 	myTask.task_id = addData[0]
@@ -122,15 +144,15 @@ def _delete():
 	"""add one itsm task"""
 	query = myTaskSession.query(WorkToolkitDB.db.Task)
 
-	delDataStr = input('输入记录 格式: "id1,id2,id3,id4" :\n    >')
-	delData = re.split(',',delDataStr)
+	IDStr = myOpt.id
+	IDs = re.split(',', IDStr)
 
-	if len(delData) == 0:
+	if len(IDs) == 0:
 		print('ERR: no deleting id input')
 		return 1
 
-	for myID in delData:
-		myTask = query.get(myID)
+	for ID in IDs:
+		myTask = query.get(ID)
 		myTaskSession.delete(myTask)
 
 	
