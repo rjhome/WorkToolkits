@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import text
 
 
-engine = sqlalchemy.create_engine('sqlite:////Users/xuxiaoyi/Documents/GitHub/WorkManage/telecomwork.db', 
+engine = sqlalchemy.create_engine('sqlite:////Users/xuxiaoyi/Documents/MD_records/telecomwork.db', 
 	connect_args={'check_same_thread': False}, echo=True)
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
